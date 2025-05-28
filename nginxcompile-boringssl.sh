@@ -3,12 +3,10 @@
 # nginxcompile-boringssl.sh - By VincentdeCristo.
 #
 # Solves the C++/C linkage error by adding -lstdc++.
-#
-# Modified to compile the latest Nginx stable version.
 # ---------------------------------------------------------------------------
 
 PROGNAME=${0##*/}
-VERSION="7.0.1-STABLE"
+VERSION="7.0.0-LINKER-FIXED"
 NGINXBUILDPATH="/usr/src"
 
 clean_up() { # Perform pre-exit housekeeping
@@ -71,19 +69,7 @@ echo "Cleanup complete."
 
 # Clone latest source code
 echo -e "\n--- Step 3: Cloning latest source code..."
-# **MODIFICATION START**
-# Clone the Nginx repository and check out the latest stable tag
-git clone https://github.com/nginx/nginx.git "$NGINXBUILDPATH/nginx" || error_exit "Failed to clone nginx."
-cd "$NGINXBUILDPATH/nginx" || error_exit "Failed to cd into nginx directory."
-LATEST_STABLE_TAG=$(git tag -l "release-*" | sort -V | tail -n 1)
-if [ -z "$LATEST_STABLE_TAG" ]; then
-    error_exit "Could not determine the latest stable Nginx version."
-fi
-echo "Checking out latest stable Nginx version: $LATEST_STABLE_TAG"
-git checkout "$LATEST_STABLE_TAG" || error_exit "Failed to checkout latest stable Nginx tag."
-cd ..
-# **MODIFICATION END**
-
+git clone https://github.com/nginx/nginx.git "$NGINXBUILDPATH/nginx" --depth=1 || error_exit "Failed to clone nginx."
 git clone https://boringssl.googlesource.com/boringssl "$NGINXBUILDPATH/boringssl" || error_exit "Failed to clone boringssl."
 git clone https://github.com/google/ngx_brotli "$NGINXBUILDPATH/ngx_brotli" --recurse-submodules --depth=1 || error_exit "Failed to clone brotli."
 git clone https://github.com/openresty/headers-more-nginx-module.git "$NGINXBUILDPATH/headers-more-nginx-module" --depth=1 || error_exit "Failed to clone headers-more-nginx-module."
@@ -177,7 +163,7 @@ RuntimeDirectory=nginx
 ExecStartPre=/opt/nginx/sbin/nginx -t -q -g 'daemon on; master_process on;'
 ExecStart=/opt/nginx/sbin/nginx -g 'daemon on; master_process on;'
 ExecReload=/opt/nginx/sbin/nginx -g 'daemon on; master_process on;' -s reload
-ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /var/run/nginx/nginx.pid
+ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /var/run/nginx.pid
 TimeoutStopSec=5
 KillMode=mixed
 
