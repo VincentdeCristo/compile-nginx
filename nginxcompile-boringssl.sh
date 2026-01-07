@@ -48,9 +48,20 @@ if [[ $(id -u) != 0 ]]; then
 fi
 
 # Check dependencies
+# Check dependencies
 echo "--- Step 1: Checking dependencies..."
 if ! command -v go &>/dev/null || ! command -v git &>/dev/null || ! command -v ninja &>/dev/null || ! command -v cmake &>/dev/null; then
-    error_exit "Please install dependencies: go, git, ninja-build, cmake, and build-essential packages."
+    error_exit "Please install dependencies: go, git, ninja-build and cmake"
+fi
+
+# Check for build-essential
+if ! dpkg -l | grep -qw build-essential; then
+    error_exit "Please install 'build-essential' package."
+fi
+
+# Check for PCRE libraries
+if ! dpkg -l | grep -qw libpcre3 || ! dpkg -l | grep -qw libpcre3-dev; then
+    error_exit "Please install 'libpcre3' and 'libpcre3-dev' packages."
 fi
 echo "Dependencies are OK."
 
