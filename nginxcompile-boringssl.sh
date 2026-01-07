@@ -48,7 +48,6 @@ if [[ $(id -u) != 0 ]]; then
 fi
 
 # Check dependencies
-# Check dependencies
 echo "--- Step 1: Checking dependencies..."
 if ! command -v go &>/dev/null || ! command -v git &>/dev/null || ! command -v ninja &>/dev/null || ! command -v cmake &>/dev/null; then
     error_exit "Please install dependencies: go, git, ninja-build and cmake"
