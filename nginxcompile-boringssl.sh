@@ -215,4 +215,13 @@ echo "Configuration file is at: /opt/nginx/etc/nginx.conf"
 echo "To enable Post-Quantum crypto, use: ssl_ecdh_curve X25519Kyber768:X25519;"
 echo "To set a custom server header, use: more_set_headers \"Server: your_name\";"
 
+# Clean up build source files
+echo -e "\n--- Step 11: Cleaning up build source files..."
+for module in "${MODULES_TO_CLEAN[@]}"; do
+    if [ -d "$NGINXBUILDPATH/$module" ]; then
+        rm -rf "$NGINXBUILDPATH/$module" >/dev/null 2>&1
+    fi
+done
+echo "Build source files cleaned up."
+
 graceful_exit
