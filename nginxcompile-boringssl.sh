@@ -62,6 +62,11 @@ fi
 if ! dpkg -l | grep -qw libpcre3 || ! dpkg -l | grep -qw libpcre3-dev; then
     error_exit "Please install 'libpcre3' and 'libpcre3-dev' packages."
 fi
+
+# Check for zlib
+if ! dpkg -l | grep -qw zlib1g || ! dpkg -l | grep -qw zlib1g-dev; then
+    error_exit "Please install 'zlib1g' and 'zlib1g-dev' packages."
+fi
 echo "Dependencies are OK."
 
 # Clean up previous build
